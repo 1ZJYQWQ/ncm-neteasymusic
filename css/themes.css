@@ -1,0 +1,190 @@
+/* ============================================
+   CSS Variables – 3 Themes
+   ============================================ */
+:root, [data-theme="dark"] {
+  --bg: #181825;
+  --panel: #1E1E30;
+  --control: #2A2A40;
+  --control-hover: #353550;
+  --fg: #E0E0F0;
+  --fg-secondary: #8888A8;
+  --accent: #0078D7;
+  --accent-hover: #1A8AE8;
+  --accent-active: #0060B0;
+  --accent-soft: rgba(0, 120, 215, 0.15);
+  --border: #3A3A52;
+  --border-light: #484862;
+  --shadow: rgba(0,0,0,0.4);
+  --shadow-lg: rgba(0,0,0,0.5);
+  --danger: #E04040;
+  --danger-hover: #F05050;
+  --success: #50C878;
+  --log-fg: #90D890;
+  --scrollbar-thumb: #3A3A52;
+  --scrollbar-track: #1E1E30;
+  --progress-track: #343450;
+  --row-alt: #222238;
+  --row-selected: rgba(0, 120, 215, 0.2);
+  --card-border: 1px solid var(--border);
+  --card-radius: 8px;
+  --transition: .2s ease;
+}
+[data-theme="light"] {
+  --bg: #F2F2F5;
+  --panel: #FFFFFF;
+  --control: #F8F8FC;
+  --control-hover: #EEEEF5;
+  --fg: #1E1E2A;
+  --fg-secondary: #707080;
+  --accent: #0067C0;
+  --accent-hover: #0078D7;
+  --accent-active: #0050A0;
+  --accent-soft: rgba(0, 103, 192, 0.12);
+  --border: #D0D0DC;
+  --border-light: #E0E0E8;
+  --shadow: rgba(0,0,0,0.08);
+  --shadow-lg: rgba(0,0,0,0.12);
+  --danger: #D03030;
+  --danger-hover: #E04040;
+  --success: #30A060;
+  --log-fg: #007000;
+  --scrollbar-thumb: #C0C0CC;
+  --scrollbar-track: #F0F0F4;
+  --progress-track: #E0E0E8;
+  --row-alt: #F5F5FA;
+  --row-selected: rgba(0, 103, 192, 0.12);
+  --card-border: 1px solid var(--border);
+}
+[data-theme="blue"] {
+  --bg: #081428;
+  --panel: #0F2040;
+  --control: #182C50;
+  --control-hover: #203864;
+  --fg: #C0D8FF;
+  --fg-secondary: #6890C8;
+  --accent: #008CFF;
+  --accent-hover: #2299FF;
+  --accent-active: #0070D0;
+  --accent-soft: rgba(0, 140, 255, 0.15);
+  --border: #284870;
+  --border-light: #305880;
+  --shadow: rgba(0,0,0,0.5);
+  --shadow-lg: rgba(0,0,0,0.6);
+  --danger: #D04040;
+  --danger-hover: #E05050;
+  --success: #40A870;
+  --log-fg: #80C8FF;
+  --scrollbar-thumb: #284870;
+  --scrollbar-track: #0F2040;
+  --progress-track: #203864;
+  --row-alt: #12284C;
+  --row-selected: rgba(0, 140, 255, 0.18);
+  --card-border: 1px solid var(--border);
+}
+[data-theme="tech"] {
+  --bg: #0A0020;
+  --panel: #120838;
+  --control: #1C0E4A;
+  --control-hover: #281860;
+  --fg: #D0C0FF;
+  --fg-secondary: #8060C0;
+  --accent: #00E5FF;
+  --accent-hover: #B388FF;
+  --accent-active: #00B8CC;
+  --accent-soft: rgba(0, 229, 255, 0.15);
+  --border: #2A1A5A;
+  --border-light: #3A2A6A;
+  --shadow: rgba(0,0,0,0.6);
+  --shadow-lg: rgba(0,0,0,0.7);
+  --danger: #FF4080;
+  --danger-hover: #FF5090;
+  --success: #00E676;
+  --log-fg: #80FFE0;
+  --scrollbar-thumb: #2A1A5A;
+  --scrollbar-track: #120838;
+  --progress-track: #1C0E4A;
+  --row-alt: #160C3E;
+  --row-selected: rgba(0, 229, 255, 0.18);
+  --card-border: 1px solid var(--border);
+}
+[data-theme="tech"] .btn-primary {
+  background: linear-gradient(135deg, #00E5FF, #B388FF, #00E5FF);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease infinite;
+  box-shadow: 0 0 8px rgba(0,229,255,0.2);
+  text-shadow: 0 0 6px rgba(0,229,255,0.4);
+}
+[data-theme="tech"] .btn-primary:hover {
+  animation: shimmer 3s ease infinite, pulse 1.5s ease-in-out infinite;
+  transform: translateY(-1px);
+}
+[data-theme="tech"] .btn-primary:active {
+  transform: translateY(0);
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 4px rgba(0,229,255,0.2); }
+  50% { box-shadow: 0 0 14px rgba(0,229,255,0.4), 0 0 24px rgba(179,136,255,0.15); }
+  100% { box-shadow: 0 0 4px rgba(0,229,255,0.2); }
+}
+[data-theme="tech"] .tab-btn.active {
+  text-shadow: 0 0 8px rgba(0,229,255,0.5);
+}
+[data-theme="tech"] .progress-fill {
+  background: linear-gradient(90deg, #00E5FF, #B388FF, #FF4080, #B388FF, #00E5FF);
+  background-size: 300% 100%;
+  animation: techFlow 3s linear infinite;
+}
+@keyframes techFlow {
+  0% { background-position: 300% 0; }
+  100% { background-position: -300% 0; }
+}
+[data-theme="tech"] .file-item.selected {
+  background: linear-gradient(90deg, rgba(0,229,255,0.1), rgba(179,136,255,0.05));
+  border-left: 2px solid var(--accent);
+}
+[data-theme="tech"] .dialog {
+  box-shadow: 0 0 20px rgba(0,229,255,0.08), 0 0 0 1px rgba(0,229,255,0.15), 0 12px 40px var(--shadow-lg);
+}
+[data-theme="tech"] ::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #00E5FF, #B388FF);
+  box-shadow: 0 0 6px rgba(0,229,255,0.3);
+}
+[data-theme="tech"] .tab-indicator {
+  box-shadow: 0 0 6px rgba(0,229,255,0.4);
+}
+[data-theme="tech"] .drop-zone.dragover,
+[data-theme="tech"] .drop-zone:hover {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 16px rgba(0,229,255,0.08);
+}
+
+[data-theme="pixel"] {
+  --bg: #1A1A1A;
+  --panel: #4A3A2A;
+  --control: #5C4A3A;
+  --control-hover: #6C5A4A;
+  --fg: #E0D0B0;
+  --fg-secondary: #A09080;
+  --accent: #7C9C5C;
+  --accent-hover: #8CB06C;
+  --accent-active: #6C8C4C;
+  --accent-soft: rgba(124, 156, 92, 0.2);
+  --border: #3A3020;
+  --border-light: #5A4A3A;
+  --shadow: rgba(0,0,0,0.5);
+  --shadow-lg: rgba(0,0,0,0.6);
+  --danger: #CC4433;
+  --danger-hover: #DD5544;
+  --success: #5CB85C;
+  --log-fg: #A0C080;
+  --scrollbar-thumb: #3A3020;
+  --scrollbar-track: #4A3A2A;
+  --progress-track: #5C4A3A;
+  --row-alt: #3A2A1E;
+  --row-selected: rgba(124, 156, 92, 0.2);
+  --card-border: 1px solid var(--border);
+}
