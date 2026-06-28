@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NcmTool</title>
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/themes.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <button class="settings-btn" onclick="openSettings()" title="设置">⚙</button>
+  </div>
+
+  <!-- Main -->
+  <div class="main-content">
+
+    <!-- Tabs -->
+    <div class="tabs" id="tabs">
+      <button class="tab-btn active" data-tab="decrypt" onclick="switchTab('decrypt')">解密</button>
+      <button class="tab-btn" data-tab="convert" onclick="switchTab('convert')">转换</button>
+      <div class="tab-indicator" id="tabIndicator"></div>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content-wrapper">
+
+      <!-- ✦ Decrypt Tab -->
+      <div class="tab-pane active" id="tab-decrypt">
+        <input type="file" id="fileInputDecrypt" accept=".ncm" multiple style="display:none" onchange="onFilePicked('decrypt', this.files)">
+        <input type="file" id="folderInputDecrypt" webkitdirectory multiple style="display:none" onchange="onFolderPicked('decrypt', this.files)">
+        <div class="drop-zone" id="dropDecrypt">
+          <span class="drop-zone-text">拖入 .ncm 文件或文件夹到这里</span>
+        </div>
+        <div class="file-list empty" id="fileListDecrypt">
+          <span>暂无文件</span>
+        </div>
+        <div class="options-row">
+          <label class="cb-wrap">
+            <input type="checkbox" checked><span class="cb-box"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></span>
+            <span class="cb-label">导出封面图</span>
+          </label>
+          <label class="cb-wrap">
+            <input type="checkbox"><span class="cb-box"><svg viewBox="0 0 12 12" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,6 5,9 10,3"/></svg></span>
+            <span class="cb-label">导出歌词</span>
+          </label>
+          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('fileInputDecrypt').click()">选择文件</button>
+          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('folderInputDecrypt').click()">选择文件夹</button>
+          <button class="btn btn-danger btn-sm" onclick="clearFiles('decrypt')">清空</button>
+          <span class="file-count" id="countDecrypt">已选择 0 个文件</span>
+        </div>
+        <div class="combo-row">
+          <label>输出格式:</label>
+          <div class="combo-wrap">
+            <select id="fmtDecrypt" onchange="updateQuality('fmtDecrypt','qltDecrypt')">
+              <option>原格式 (不转换)</option>
+              <option>mp3</option>
+              <option>wav</option>
+              <option>flac</option>
+              <option>aac</option>
+              <option>ogg</option>
+              <option>wma</option>
+            </select>
+          </div>
+        </div>
+        <div class="combo-row">
+          <label>音质:</label>
+          <div class="combo-wrap">
+            <select id="qltDecrypt" disabled onchange="saveQuality('qltDecrypt','fmtDecrypt')">
+              <option>默认</option>
+            </select>
+          </div>
+        </div>
+        <div class="output-row">
+          <label>输出目录:</label>
+          <input class="output-path" id="outDecrypt" value="C:\Users\zhangjiayang\Desktop" readonly>
+          <button class="btn btn-secondary btn-sm" onclick="browseOutput('outDecrypt')">浏览</button>
+        </div>
+        <div class="action-row">
+          <button class="btn btn-primary" id="startDecrypt" onclick="startDecrypt()">开始解密</button>
+          <button class="btn btn-danger" id="cancelDecrypt" disabled onclick="cancelDecrypt()">取消</button>
+        </div>
+        <div class="progress-row">
+          <div class="progress-group">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:0%"></div>
+            </div>
+            <span class="progress-text" id="progTextDecrypt">0 / 0</span>
+          </div>
+          <div class="progress-group sub-progress" id="subProgDecrypt" style="display:none">
+            <div class="progress-bar sub-progress">
+              <div class="progress-fill" style="width:0%"></div>
+            </div>
+            <span class="progress-text" id="subProgTextDecrypt"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ✦ Convert Tab -->
+      <div class="tab-pane" id="tab-convert">
+        <input type="file" id="fileInputConvert" accept=".mp3,.wav,.flac,.aac,.ogg,.m4a,.wma,.ape" multiple style="display:none" onchange="onFilePicked('convert', this.files)">
+        <input type="file" id="folderInputConvert" webkitdirectory multiple style="display:none" onchange="onFolderPicked('convert', this.files)">
+        <div class="drop-zone" id="dropConvert">
+          <span class="drop-zone-text">拖入音频文件或文件夹到这里</span>
+        </div>
+        <div class="file-list empty" id="fileListConvert">
+          <span>暂无文件</span>
+        </div>
+        <div class="options-row">
+          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('fileInputConvert').click()">选择文件</button>
+          <button class="btn btn-secondary btn-sm" onclick="document.getElementById('folderInputConvert').click()">选择文件夹</button>
+          <select id="folderFilterConvert" style="padding:4px 6px;border:var(--card-border);border-radius:4px;background:var(--control);color:var(--fg);font-size:11px;font-family:inherit;outline:none;cursor:pointer">
+            <option value="all">筛选: 全部</option>
+            <option value="mp3">mp3</option>
+            <option value="wav">wav</option>
+            <option value="flac">flac</option>
+            <option value="aac">aac</option>
+            <option value="ogg">ogg</option>
+            <option value="wma">wma</option>
+          </select>
+          <button class="btn btn-danger btn-sm" onclick="clearFiles('convert')">清空</button>
+          <span class="file-count" id="countConvert">已选择 0 个文件</span>
+        </div>
+        <div class="combo-row">
+          <label>目标格式:</label>
+          <div class="combo-wrap">
+            <select id="fmtConvert" onchange="updateQuality('fmtConvert','qltConvert')">
+              <option>mp3</option>
+              <option>wav</option>
+              <option>flac</option>
+              <option>aac</option>
+              <option>ogg</option>
+              <option>wma</option>
+            </select>
+          </div>
+        </div>
+        <div class="combo-row">
+          <label>音质:</label>
+          <div class="combo-wrap">
+            <select id="qltConvert" onchange="saveQuality('qltConvert','fmtConvert')">
+              <option>128k</option>
+              <option selected>192k</option>
+              <option>256k</option>
+              <option>320k</option>
+            </select>
+          </div>
+        </div>
+        <div class="output-row">
+          <label>输出目录:</label>
+          <input class="output-path" id="outConvert" value="C:\Users\zhangjiayang\Desktop" readonly>
+          <button class="btn btn-secondary btn-sm" onclick="browseOutput('outConvert')">浏览</button>
+        </div>
+        <div class="action-row">
+          <button class="btn btn-primary" id="startConvert" onclick="startConvert()">开始转换</button>
+          <button class="btn btn-danger" id="cancelConvert" disabled onclick="cancelConvert()">取消</button>
+        </div>
+        <div class="progress-row">
+          <div class="progress-group">
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:0%"></div>
+            </div>
+            <span class="progress-text" id="progTextConvert">0 / 0</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Log Area -->
+    <div class="log-area" id="logArea" style="height:140px">
+      <div class="log-toggle" onclick="toggleLog()">
+        <span class="log-toggle-icon">▼</span>
+        <span class="log-toggle-text" id="lastLogLine">程序已启动</span>
+      </div>
+      <div class="log-content" id="logContent">
+        <div class="log-entry"><span class="log-level info">INFO</span><span class="log-time">[14:20:01]</span><span class="log-msg">程序已启动</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Settings Overlay (Menu) -->
+<div class="overlay" id="settingsOverlay">
+  <div class="dialog" style="max-width:360px">
+    <h3>设置</h3>
+    <div class="settings-menu">
+      <div class="settings-btn" onclick="openSection('theme')">
+        <span class="sbtn-ico">🎨</span>
+        <span>主题选择</span>
+        <span class="sbtn-arrow">›</span>
+      </div>
+      <div class="settings-btn" onclick="openSection('pref')">
+        <span class="sbtn-ico">⚙</span>
+        <span>偏好调节</span>
+        <span class="sbtn-arrow">›</span>
+      </div>
+      <div class="settings-btn" onclick="openSection('stats')">
+        <span class="sbtn-ico">📊</span>
+        <span>统计数据</span>
+        <span class="sbtn-arrow">›</span>
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-secondary" onclick="closeSettings()">关闭</button>
+    </div>
+  </div>
+</div>
+
+<!-- Theme Overlay -->
+<div class="overlay" id="themeOverlay">
+  <div class="dialog">
+    <div class="back-btn" onclick="backToSettings()">‹ 返回设置</div>
+    <h3>主题选择</h3>
+    <div class="theme-options" id="themeOptions">
+      <label class="theme-radio selected" data-theme="dark" onclick="selectTheme(this,'dark')">
+        <input type="radio" name="theme" value="dark" checked>
+        <span class="theme-dot"><span class="theme-dot-inner"></span></span>
+        <span class="theme-label">深色主题</span>
+        <span class="theme-preview">
+          <span class="preview-swatch" style="background:#1E1E30"></span>
+          <span class="preview-swatch" style="background:#0078D7"></span>
+          <span class="preview-swatch" style="background:#2A2A40"></span>
+        </span>
+      </label>
+      <label class="theme-radio" data-theme="light" onclick="selectTheme(this,'light')">
+        <input type="radio" name="theme" value="light">
+        <span class="theme-dot"><span class="theme-dot-inner"></span></span>
+        <span class="theme-label">浅色主题</span>
+        <span class="theme-preview">
+          <span class="preview-swatch" style="background:#FFFFFF"></span>
+          <span class="preview-swatch" style="background:#0067C0"></span>
+          <span class="preview-swatch" style="background:#F8F8FC"></span>
+        </span>
+      </label>
+      <label class="theme-radio" data-theme="blue" onclick="selectTheme(this,'blue')">
+        <input type="radio" name="theme" value="blue">
+        <span class="theme-dot"><span class="theme-dot-inner"></span></span>
+        <span class="theme-label">蓝色主题</span>
+        <span class="theme-preview">
+          <span class="preview-swatch" style="background:#0F2040"></span>
+          <span class="preview-swatch" style="background:#008CFF"></span>
+          <span class="preview-swatch" style="background:#182C50"></span>
+        </span>
+      </label>
+      <label class="theme-radio" data-theme="tech" onclick="selectTheme(this,'tech')">
+        <input type="radio" name="theme" value="tech">
+        <span class="theme-dot"><span class="theme-dot-inner"></span></span>
+        <span class="theme-label">科技主题</span>
+        <span class="theme-preview">
+          <span class="preview-swatch" style="background:#120838"></span>
+          <span class="preview-swatch" style="background:#00E5FF"></span>
+          <span class="preview-swatch" style="background:#1C0E4A"></span>
+        </span>
+      </label>
+      <label class="theme-radio" data-theme="pixel" onclick="selectTheme(this,'pixel')">
+        <input type="radio" name="theme" value="pixel">
+        <span class="theme-dot"><span class="theme-dot-inner"></span></span>
+        <span class="theme-label">像素主题</span>
+        <span class="theme-preview">
+          <span class="preview-swatch" style="background:#4A3A2A"></span>
+          <span class="preview-swatch" style="background:#7C9C5C"></span>
+          <span class="preview-swatch" style="background:#1A1A1A"></span>
+        </span>
+      </label>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-secondary" onclick="backToSettings()">返回</button>
+    </div>
+  </div>
+</div>
+
+<!-- Preference Overlay -->
+<div class="overlay" id="prefOverlay">
+  <div class="dialog">
+    <div class="back-btn" onclick="backToSettings()">‹ 返回设置</div>
+    <h3>偏好调节</h3>
+    <p style="font-size:12px;color:var(--fg-secondary);margin-bottom:12px">选择品质参数的记忆方式</p>
+    <div class="pref-options">
+      <label class="pref-radio" data-pref="manual" onclick="switchPref('manual',this)">
+        <input type="radio" name="pref" value="manual">
+        <span class="pref-dot"><span class="pref-dot-inner"></span></span>
+        <span class="pref-label">
+          用户手动指定
+          <span class="pref-desc">每次打开使用默认品质参数</span>
+        </span>
+      </label>
+      <label class="pref-radio selected" data-pref="auto" onclick="switchPref('auto',this)">
+        <input type="radio" name="pref" value="auto" checked>
+        <span class="pref-dot"><span class="pref-dot-inner"></span></span>
+        <span class="pref-label">
+          记录上次行为
+          <span class="pref-desc">自动记住每个格式上次选择的品质参数</span>
+        </span>
+      </label>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-secondary" onclick="backToSettings()">返回</button>
+    </div>
+  </div>
+</div>
+
+<!-- Stats Overlay -->
+<div class="overlay" id="statsOverlay">
+  <div class="dialog">
+    <div class="back-btn" onclick="backToSettings()">‹ 返回设置</div>
+    <h3>统计数据</h3>
+    <div class="stats-display">
+      <div class="stat-row">
+        <span class="stat-label">解密成功</span>
+        <span class="stat-value" id="statDecrypt">0</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">转换成功</span>
+        <span class="stat-value" id="statConvert">0</span>
+      </div>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-danger" onclick="resetStats()">重置统计</button>
+      <button class="btn btn-secondary" onclick="backToSettings()">返回</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/globals.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/log.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/file-handler.js"></script>
+<script src="js/crypto.js"></script>
+<script src="js/ffmpeg-client.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
